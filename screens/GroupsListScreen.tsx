@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../lib/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -73,10 +74,18 @@ export default function GroupsListScreen() {
     setError(null);
   }, [session]);
 
-  useEffect(() => {
-    setLoading(true);
-    fetchGroups().finally(() => setLoading(false));
-  }, [fetchGroups]);
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+      setLoading(true);
+      fetchGroups().finally(() => {
+        if (isActive) setLoading(false);
+      });
+      return () => {
+        isActive = false;
+      };
+    }, [fetchGroups])
+  );
 
   if (loading) {
     return (
