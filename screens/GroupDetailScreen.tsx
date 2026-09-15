@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../lib/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -204,6 +204,28 @@ export default function GroupDetailScreen({ route, navigation }: Props) {
       };
     }, [fetchDetail])
   );
+
+  // Same broad, unfiltered subscription as the web app's RealtimeGroupListener —
+  // postgres_changes doesn't support filtering by group_id here, so any change
+  // to these tables triggers a refetch and the group-scoped query does the filtering.
+  useEffect(() => {
+    const channel = supabase
+      .channel(`group-${groupId}-changes`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'expenses' }, () => {
+        fetchDetail();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'settlements' }, () => {
+        fetchDetail();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'expense_splits' }, () => {
+        fetchDetail();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [groupId, fetchDetail]);
 
   if (loading) {
     return (
