@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ActivityIndicator, View } from 'react-native';
 import { useAuth } from '../lib/AuthContext';
-import HomeScreen from '../screens/HomeScreen';
 import AuthStack from './AuthStack';
+import MainStack from './MainStack';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,7 +20,7 @@ export default function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {session ? (
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Main" component={MainStack} />
       ) : (
         <Stack.Screen name="Auth" component={AuthStack} />
       )}
