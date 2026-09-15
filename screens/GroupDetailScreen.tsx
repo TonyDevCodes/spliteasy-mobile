@@ -88,7 +88,7 @@ const TABS: { key: Tab; label: string }[] = [
   { key: 'invite', label: 'Invite' },
 ];
 
-export default function GroupDetailScreen({ route }: Props) {
+export default function GroupDetailScreen({ route, navigation }: Props) {
   const { groupId } = route.params;
   const { session } = useAuth();
   const [tab, setTab] = useState<Tab>('balances');
@@ -296,6 +296,12 @@ export default function GroupDetailScreen({ route }: Props) {
                 </View>
               ))
             )}
+            <Pressable
+              style={styles.addExpenseButton}
+              onPress={() => navigation.navigate('AddExpense', { groupId })}
+            >
+              <Text style={styles.addExpenseButtonText}>+ Add expense</Text>
+            </Pressable>
           </View>
         )}
 
@@ -407,5 +413,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#18181b',
+  },
+  addExpenseButton: {
+    marginTop: 12,
+  },
+  addExpenseButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2563eb',
   },
 });

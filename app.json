@@ -20,6 +20,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "SplitEasy needs access to your photos to attach a receipt to an expense.",
+          "cameraPermission": "SplitEasy needs access to your camera to take a photo of a receipt."
+        }
+      ]
+    ]
   }
 }

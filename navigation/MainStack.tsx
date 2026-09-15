@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Pressable, Text } from 'react-native';
 import { useAuth } from '../lib/AuthContext';
+import AddExpenseScreen from '../screens/AddExpenseScreen';
 import CreateGroupScreen from '../screens/CreateGroupScreen';
 import GroupDetailScreen from '../screens/GroupDetailScreen';
 import GroupsListScreen from '../screens/GroupsListScreen';
@@ -9,6 +10,7 @@ export type MainStackParamList = {
   GroupsList: undefined;
   CreateGroup: undefined;
   GroupDetail: { groupId: string; groupName: string };
+  AddExpense: { groupId: string };
 };
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
@@ -41,6 +43,7 @@ export default function MainStack() {
         component={GroupDetailScreen}
         options={({ route }) => ({ title: route.params.groupName })}
       />
+      <Stack.Screen name="AddExpense" component={AddExpenseScreen} options={{ title: 'Add Expense' }} />
     </Stack.Navigator>
   );
 }
