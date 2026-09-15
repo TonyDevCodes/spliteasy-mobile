@@ -1,8 +1,12 @@
 import { useFocusEffect } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../lib/AuthContext';
 import { supabase } from '../lib/supabase';
+import { MainStackParamList } from '../navigation/MainStack';
+
+type Props = NativeStackScreenProps<MainStackParamList, 'GroupsList'>;
 
 type GroupRow = {
   id: string;
@@ -16,7 +20,7 @@ type MembershipRow = {
 
 type GroupWithMemberCount = GroupRow & { memberCount: number };
 
-export default function GroupsListScreen() {
+export default function GroupsListScreen({ navigation }: Props) {
   const { session } = useAuth();
   const [groups, setGroups] = useState<GroupWithMemberCount[]>([]);
   const [loading, setLoading] = useState(true);
@@ -117,12 +121,15 @@ export default function GroupsListScreen() {
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.listContent}
       renderItem={({ item }) => (
-        <View style={styles.card}>
+        <Pressable
+          style={styles.card}
+          onPress={() => navigation.navigate('GroupDetail', { groupId: item.id, groupName: item.name })}
+        >
           <Text style={styles.groupName}>{item.name}</Text>
           <Text style={styles.memberCount}>
             {item.memberCount} {item.memberCount === 1 ? 'member' : 'members'}
           </Text>
-        </View>
+        </Pressable>
       )}
     />
   );
